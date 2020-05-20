@@ -1,4 +1,4 @@
-package handler
+package business
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 type Hello struct{}
 
 func (h Hello) Goodbye(c context.Context, request *proto.Request, response *proto.Response) error {
-	response.Message = "Goodbye"
+	response.Message = "Goodbye " + request.Name
 	return nil
 }
 

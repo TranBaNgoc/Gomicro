@@ -2,34 +2,32 @@ package main
 
 import (
 	"github.com/micro/go-micro"
-	h "gomicro/server/handler"
+	business "gomicro/server/business"
 	proto "gomicro/server/pb"
-	"gomicro/server/rest"
 	"log"
 )
 
-func main() {
-	service := micro.NewService(micro.Name("hello"))
-	service.Init()
-	proto.RegisterHelloHandler(service.Server(), new(h.Hello))
-	rest.NewMatcher(APIMatcher)
-	go rest.HTTPServe("8001")
-	log.Fatal(service.Run())
+var APIMatcher = map[string]Handler{
+	"/hello": {
+		Request:     &proto.Request{},
+		Response:    &proto.Response{},
+		Handler:     &business.Hello{},
+		ServiceName: "Say",
+		Method:      []string{"GET"},
+	},
+	"/goodbye/{Name}": {
+		Request:     &proto.Request{},
+		Response:    &proto.Response{},
+		Handler:     &business.Hello{},
+		ServiceName: "Goodbye",
+		Method:      []string{"GET", "POST"},
+	},
 }
 
-var APIMatcher = map[string]rest.Handler{
-	"/": {
-		Request:     &proto.Request{},
-		Response:    &proto.Response{},
-		Handler:     new(h.Hello),
-		ServiceName: "Say",
-		Method:      "GET",
-	},
-	"/test/{id}": {
-		Request:     &proto.Request{},
-		Response:    &proto.Response{},
-		Handler:     new(h.Hello),
-		ServiceName: "Goodbye",
-		Method:      "GET",
-	},
+func main() {
+	go ServeHTTP(&APIMatcher, "8001")
+	service := micro.NewService(micro.Name("hello"))
+	service.Init()
+	proto.RegisterHelloHandler(service.Server(), new(business.Hello))
+	log.Fatal(service.Run())
 }
