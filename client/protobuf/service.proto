@@ -1,0 +1,23 @@
+syntax="proto3";
+
+package protobuf;
+
+service UserService {
+  rpc GetListUsers(EmptyRequest) returns (GetListUserResponse);
+  rpc AddUser(User) returns (AddUserResponse);
+}
+
+message EmptyRequest {}
+
+message GetListUserResponse {
+  repeated User user= 1;
+}
+
+message User {
+  string Name = 1;
+  int64 Age = 2;
+}
+
+message AddUserResponse {
+  string Message = 1;
+}

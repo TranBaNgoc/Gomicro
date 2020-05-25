@@ -2,32 +2,32 @@ package main
 
 import (
 	"github.com/micro/go-micro"
-	business "gomicro/server/business"
-	proto "gomicro/server/pb"
+	"gomicro/server/business"
+	proto "gomicro/server/protobuf"
 	"log"
 )
 
 var APIMatcher = map[string]Handler{
-	"/hello": {
-		Request:     &proto.Request{},
-		Response:    &proto.Response{},
-		Handler:     &business.Hello{},
-		ServiceName: "Say",
+	"/all": {
+		Request:     &proto.EmptyRequest{},
+		Response:    &proto.GetListUserResponse{},
+		Handler:     &business.UserService{},
+		ServiceName: "GetListUsers",
 		Method:      []string{"GET"},
 	},
-	"/goodbye/{Name}": {
-		Request:     &proto.Request{},
-		Response:    &proto.Response{},
-		Handler:     &business.Hello{},
-		ServiceName: "Goodbye",
-		Method:      []string{"GET", "POST"},
+	"/add": {
+		Request:     &proto.User{},
+		Response:    &proto.AddUserResponse{},
+		Handler:     &business.UserService{},
+		ServiceName: "AddUser",
+		Method:      []string{"POST"},
 	},
 }
 
 func main() {
 	go ServeHTTP(&APIMatcher, "8001")
-	service := micro.NewService(micro.Name("hello"))
+	service := micro.NewService(micro.Name("user.service"))
 	service.Init()
-	proto.RegisterHelloHandler(service.Server(), new(business.Hello))
+	proto.RegisterUserServiceHandler(service.Server(), new(business.UserService))
 	log.Fatal(service.Run())
 }

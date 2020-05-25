@@ -3,10 +3,14 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
+	"gomicro/server/business"
+	pb "gomicro/server/protobuf"
 	"log"
 	"net/http"
 	"reflect"
+	"time"
 )
 
 var (
@@ -30,6 +34,7 @@ func ServeHTTP(ApiRouter *map[string]Handler, portServe string) {
 			r.HandleFunc(path, handle).Methods(val)
 		}
 	}
+	r.HandleFunc("/all_nof", getListUserHandler)
 	log.Fatalln(http.ListenAndServe(":"+port, r))
 }
 
@@ -45,6 +50,9 @@ func getRouter(request *http.Request) (Handler, error) {
 }
 
 func handle(writer http.ResponseWriter, request *http.Request) {
+	start := time.Now().Nanosecond()
+	fmt.Print(start)
+
 	match, err := getRouter(request)
 	if err != nil {
 		log.Println(55, err)
@@ -85,6 +93,39 @@ func handle(writer http.ResponseWriter, request *http.Request) {
 	if _, err = writer.Write(result); err != nil {
 		log.Fatalln("Response:", err)
 	}
+	fmt.Println(-time.Now().Nanosecond())
+}
+
+func getListUserHandler(writer http.ResponseWriter, request *http.Request) {
+	start := time.Now().Nanosecond()
+	fmt.Print(start)
+
+	req := &pb.EmptyRequest{}
+	res := &pb.GetListUserResponse{}
+	if request.Method == "GET" {
+		vars := mux.Vars(request)
+		paramsJson, err := json.Marshal(vars)
+		if err != nil {
+			log.Fatalln(64, err)
+		}
+		err = json.Unmarshal(paramsJson, &req)
+		if err != nil {
+			log.Fatalln(71, err)
+		}
+	} else {
+		decoder := json.NewDecoder(request.Body)
+		err := decoder.Decode(&req)
+		if err != nil {
+			log.Fatalln(77, err)
+		}
+		request.Body.Close()
+	}
+
+	err := business.UserService{}.GetListUsers(context.Background(), req, res)
+	if err != nil {
+
+	}
+	fmt.Println(-time.Now().Nanosecond())
 }
 
 func call(handler interface{}, input []interface{}, methodName string) error {
