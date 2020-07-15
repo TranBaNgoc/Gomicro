@@ -3,21 +3,22 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/micro/go-micro/client"
 	pb "gomicro/client/protobuf"
 	"net/http"
 	"sync"
 )
 
 func main() {
-	cli := pb.NewUserServiceClient("user.service", client.NewClient())
-	body, err := cli.GetListUsers(context.Background(), &pb.EmptyRequest{})
-	if err == nil {
-		fmt.Println(body.User)
-	} else {
-		fmt.Println(err)
-	}
 
+	// create the greeter client using the service name and client
+	greeter := pb.NewUserService()
+	// request the Hello method on the Greeter handler
+	rsp, err := greeter.GetListUsers(context.TODO(), &pb.EmptyRequest{})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(rsp.User)
 	//body2, err2 := cli.AddUser(context.Background(), &protobuf.User{
 	//	Name:                 "Nguyen ba Nam",
 	//	Age:                  22,

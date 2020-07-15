@@ -2,33 +2,27 @@ package business
 
 import (
 	"context"
-	"fmt"
 	"gomicro/server/model"
 	proto "gomicro/server/protobuf"
-	"time"
 )
 
 type UserService struct{}
 
 func (u UserService) GetListUsers(c context.Context, request *proto.EmptyRequest, response *proto.GetListUserResponse) error {
-	fmt.Print(-time.Now().Nanosecond())
-	fmt.Print("+")
-	users, err := model.GetUsers()
-	if err != nil {
-		return err
-	}
-
-	time.Sleep(5 * time.Second)
-
-	var list []*proto.User
-	for _, u := range users {
-		list = append(list, &proto.User{
-			Name: u.Name,
-			Age:  u.Age,
-		})
-	}
-	response.User = list
-	fmt.Print(time.Now().Nanosecond())
+	//users, err := model.GetUsers()
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//var list []*proto.User
+	//for _, u := range users {
+	//	list = append(list, &proto.User{
+	//		Name: u.Name,
+	//		Age:  u.Age,
+	//	})
+	//}
+	//response.User = list
+	response.User = []*proto.User{}
 	return nil
 }
 

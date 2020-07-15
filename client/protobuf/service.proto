@@ -3,7 +3,11 @@ syntax="proto3";
 package protobuf;
 
 service UserService {
-  rpc GetListUsers(EmptyRequest) returns (GetListUserResponse);
+  rpc GetListUsers(EmptyRequest) returns (GetListUserResponse){
+//    option(google.api.http) = {
+//      get: "/users/all",
+//    };
+  }
   rpc AddUser(User) returns (AddUserResponse);
 }
 

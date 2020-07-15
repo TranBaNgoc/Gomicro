@@ -14,7 +14,7 @@ func GetConnection() (*gorm.DB, error) {
 	}
 
 	var err error
-	db, err = gorm.Open("mysql", "root:bangocntt@49@/test?charset=utf8&parseTime=True&loc=Local")
+	db, err = gorm.Open("mysql", "root:bangocntt@49@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		return nil, err
 	}

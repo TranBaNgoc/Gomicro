@@ -2,7 +2,6 @@ package model
 
 import (
 	"gomicro/server/utils"
-	"log"
 )
 
 type User struct {
@@ -12,13 +11,13 @@ type User struct {
 }
 
 func init() {
-	db, err := utils.GetConnection()
-	if err != nil {
-		log.Println("User not created", err)
-	}
-	if !db.HasTable(&User{}) {
-		db.CreateTable(&User{})
-	}
+	//db, err := utils.GetConnection()
+	//if err != nil {
+	//	log.Println("User not created", err)
+	//}
+	//if !db.HasTable(&User{}) {
+	//	db.CreateTable(&User{})
+	//}
 }
 
 func AddUser(user *User) error {
